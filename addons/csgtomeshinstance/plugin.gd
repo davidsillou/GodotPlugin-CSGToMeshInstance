@@ -9,12 +9,15 @@ var plugin_button :PluginButton
 func selection_changed() -> void:
 	var selection = get_editor_interface().get_selection().get_selected_nodes()
 	
-	var can_convert = selection.size() == 1 and selection[0] is CSGShape3D and selection[0].is_root_shape()
-	
-	# If selected object in tree is csg
+	var can_convert = true
+	for csg in selection:
+		if (not csg is CSGShape3D) or (not csg.is_root_shape()):
+			can_convert = false
+			break
+			
 	if can_convert:
 		var root = get_tree().get_edited_scene_root()
-		plugin_button.show_button(root, selection[0])
+		plugin_button.show_button(root, selection)
 	else:
 		plugin_button.hide_button()
 
